@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>FB Cookie to Token</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <style>
+    body {
+      background: black;
+      color: #00ffe0;
+      font-family: monospace;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      background: rgba(0, 255, 255, 0.08);
+      border: 2px solid #00ffe0;
+      border-radius: 10px;
+      padding: 30px;
+      box-shadow: 0 0 30px #00ffe0;
+      z-index: 2;
+      max-width: 600px;
+      width: 90%;
+    }
+
+    textarea, button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      background: black;
+      border: 1px solid #00ffe0;
+      color: #00ffe0;
+      font-size: 14px;
+    }
+
+    button {
+      background: #00ffe0;
+      color: black;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+
+    pre {
+      margin-top: 20px;
+      white-space: pre-wrap;
+      color: #00ffe0;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="matrix"></canvas>
+  <div class="container">
+    <h2>💠 Facebook Token Extractor 💠</h2>
+    <form method="POST">
+      <label>Enter Facebook Cookie:</label>
+      <textarea name="cookie" rows="5" placeholder="Paste your FB cookies here..." required>{{ request.form.cookie or '' }}</textarea>
+      <button type="submit">Get Access Token</button>
+    </form>
+
+    {% if result %}
+      <pre>{{ result }}</pre>
+    {% endif %}
+  </div>
+
+  <script>
+    const canvas = document.getElementById("matrix");
+    const ctx = canvas.getContext("2d");
+    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth;
+
+    const cols = canvas.width / 20;
+    const ypos = Array(Math.floor(cols)).fill(0);
+
+    function matrixEffect() {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#00ffe0";
+      ctx.font = "15pt monospace";
+
+      ypos.forEach((y, i) => {
+        const text = String.fromCharCode(0x30A0 + Math.random() * 96);
+        const x = i * 20;
+        ctx.fillText(text, x, y);
+        ypos[i] = y > canvas.height + Math.random() * 10000 ? 0 : y + 20;
+      });
+    }
+
+    setInterval(matrixEffect, 50);
+  </script>
+</body>
+</html>
